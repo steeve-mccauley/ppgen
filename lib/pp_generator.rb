@@ -40,7 +40,7 @@ class Pp_generator
 		while true do
 			idx=@r.rand(@nwords)
 			word=@words[idx]
-			next if word.length > @max_word_length
+			next if @max_word_length > 0 && word.length > @max_word_length
 			pp << word
 			break if pp.length == @pp_length
 		end
@@ -48,6 +48,7 @@ class Pp_generator
 	end
 
 	def loop_ppgen(num)
+		puts "seed="+@seed.to_s
 		num.times { |n|
 			puts gen_passphrase
 		}

@@ -18,20 +18,32 @@ $log=Logger.set_logger(STDERR, Logger::WARN)
 
 $opts = {
 	:words=>"#{MD}/data/words.txt",
-	:logger=> $log
+	:logger=> $log,
+	:pp_length => 4,
+	:max_word_length => 6,
+	:num => 20,
+	:seed => nil
 }
 
 $opts = OParser.parse($opts, "this is help text") { |opts|
-	opts.on('-n', '--nwords NUM', Integer, "") { |num|
+	opts.on('-p', '--pplen WORDS', Integer, "Number of words in passphrase, def=#{$opts[:pp_length]}") { |words|
+		$opts[:pp_length]=words
+	}
+
+	opts.on('-l', '--wordlen CHARS', Integer, "Maximum length of words for passphrase, def=#{$opts[:max_word_length]}") { |chars|
+		$opts[:max_word_length]=chars
+	}
+
+	opts.on('-n', '--num NUM', Integer, "Number of passphrases to generate, def=#{$opts[:num]}") { |num|
 		$opts[:num]=num
+	}
+
+	opts.on('-s', '--seed SEED', Integer, "Random number generator seed") { |seed|
+		$opts[:seed]=seed
 	}
 }
 
-ppgen=Pp_generator.new($opts[:words], :logger=>$log)
+ppgen=Pp_generator.new($opts[:words], $opts) 
 
-#ppgen.reseed(1960)
-#puts ppgen.seed
-
-ppgen.loop_ppgen(20)
-$log.info "Seed = #{ppgen.seed}"
+ppgen.loop_ppgen($opts[:num])
 
