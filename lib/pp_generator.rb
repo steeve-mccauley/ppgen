@@ -1,5 +1,6 @@
 #
 #
+#
 
 class Pp_generator
 	attr_reader :wordfile, :seed, :log
@@ -9,6 +10,7 @@ class Pp_generator
 		:max_word_length=>6,
 		:seed=>nil
 	}
+
 	def initialize(wordfile, opts=DEF_OPTS)
 		@log=opts[:logger]||Logger.new
 		load_words(wordfile)
