@@ -25,7 +25,7 @@ $opts = {
 	:seed => nil
 }
 
-$opts = OParser.parse($opts, "this is help text") { |opts|
+$opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 	opts.on('-p', '--pplen WORDS', Integer, "Number of words in passphrase, def=#{$opts[:pp_length]}") { |words|
 		$opts[:pp_length]=words
 	}

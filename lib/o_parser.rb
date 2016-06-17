@@ -28,7 +28,11 @@ class OParser
 	def self.parse(gopts, help_text, &block)
 		@@log=gopts[:logger]
 		raise "Logger not set in OParser" if @@log.nil?
-		help_text = "" if help_text.nil?
+		if help_text.nil?
+			help_text = ""
+		elsif File.exists?(help_text)
+			help_text=File.read(help_text)
+		end
 		optparser = OptionParser.new { |opts|
 			opts.banner = "#{ME}.rb [options]\n"
 
