@@ -3,12 +3,13 @@
 #
 
 class Pp_generator
-	attr_reader :wordfile, :seed, :log
+	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase
 
 	DEF_OPTS={
 		:pp_length=>4,
 		:max_word_length=>6,
-		:seed=>nil
+		:seed=>nil,
+		:pp_hint => []
 	}
 
 	def initialize(wordfile, opts=DEF_OPTS)
@@ -17,6 +18,9 @@ class Pp_generator
 		reseed(opts[:seed])
 
 		@pp_length = opts[:pp_length]|| DEF_OPTS[:pp_length]
+		raise "passphrase length is too small" if @pp_length < 2
+		@pp_hint = opts[:pp_hint]|| DEF_OPTS[:pp_hint]
+		raise "Too many hints for given passphrase length" if @pp_length <= @pp_hint.length
 		@max_word_length = opts[:max_word_length]||DEF_OPTS[:max_word_length]
 	end
 
@@ -36,15 +40,15 @@ class Pp_generator
 	end
 
 	def gen_passphrase
-		pp=[]
+		@pass_phrase=Array.new(@pp_hint)
 		while true do
 			idx=@r.rand(@nwords)
 			word=@words[idx]
 			next if @max_word_length > 0 && word.length > @max_word_length
-			pp << word
-			break if pp.length == @pp_length
+			@pass_phrase << word
+			break if @pass_phrase.length == @pp_length
 		end
-		pp.join(" ")
+		@pass_phrase.join(" ")
 	end
 
 	def loop_ppgen(num)
