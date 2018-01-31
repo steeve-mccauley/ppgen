@@ -14,10 +14,10 @@ DST="#{TMP}/backup"
 LOG="#{TMP}/#{ME}.log"
 CFG=File.join(MD, ME+".json")
 
-$log=Logger.set_logger(STDERR, Logger::WARN)
+$log=Logger.set_logger(STDERR, Logger::INFO)
 
 $opts = {
-	:word_file =>"#{MD}/data/words.txt",
+	:word_files =>["#{MD}/data/words.txt"],
 	:logger=> $log,
 	:pp_length => 4,
 	:max_word_length => 6,
@@ -50,24 +50,37 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 		$opts[:pp_hint]=pp_hint
 	}
 
-	opts.on('-C', '--random-case PERCENT', Integer, "") { |random_case|
+	opts.on('-C', '--random-case PERCENT', Integer, "Percentage of case switches to include in passphrase") { |random_case|
 		raise "Enter percentage as positive integer between 0 and 100" if random_case < 0 || random_case > 100
 		$opts[:random_case] = random_case
 	}
 
-	opts.on('-S', '--special-char PERCENT', Integer, "") { |special_char|
+	opts.on('-S', '--special-char PERCENT', Integer, "Percentage of special characters to include in passphrase") { |special_char|
 		raise "Enter percentage as positive integer between 0 and 100" if special_char < 0 || special_char > 100
 		$opts[:special_char] = special_char
 	}
 
-	opts.on('-N', '--numbers PERCENT', Integer, "") { |numbers|
+	opts.on('-N', '--numbers PERCENT', Integer, "Percentage of digits to include in passphrase") { |numbers|
 		raise "Enter percentage as positive integer between 0 and 100" if numbers < 0 || numbers > 100
 		$opts[:numbers] = numbers
+	}
+
+	opts.on('-f', '--data FILES', Array, "Array of extra word files in addition to #{$opts[:word_files]}") { |word_files|
+		word_files.each { |word_file|
+			begin
+				word_file=File.expand_path(word_file)
+				word_file=File.realpath(word_file)
+				$opts[:word_files] << word_file
+				$opts[:word_files].uniq!
+			rescue => e
+				$log.die "Word file #{word_file}: "+e.message
+			end
+		}
 	}
 }
 
 begin
-	ppgen=Pp_generator.new($opts[:word_file], $opts)
+	ppgen=Pp_generator.new($opts[:word_files], $opts)
 
 	ppgen.loop_ppgen($opts[:num])
 rescue => e

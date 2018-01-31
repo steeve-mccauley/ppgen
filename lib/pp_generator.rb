@@ -3,7 +3,7 @@
 #
 
 class Pp_generator
-	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase, :random_case, :special_char, :numbers
+	attr_reader :wordfiles, :seed, :log, :pp_hint, :pass_phrase, :random_case, :special_char, :numbers
 
 	SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
 	NUMBERS=%w/0 1 2 3 4 5 6 7 8 9/
@@ -18,9 +18,9 @@ class Pp_generator
 		:numbers => 0
 	}
 
-	def initialize(wordfile, opts=DEF_OPTS)
+	def initialize(wordfiles, opts=DEF_OPTS)
 		@log=opts[:logger]||Logger.new
-		load_words(wordfile)
+		load_words(wordfiles)
 		reseed(opts[:seed])
 
 		@pp_length = opts[:pp_length]|| DEF_OPTS[:pp_length]
@@ -33,12 +33,23 @@ class Pp_generator
 		@numbers = opts[:numbers]||DEF_OPTS[:numbers]
 	end
 
-	def load_words(wordfile)
-		@wordfile=wordfile
-		@words=File.read(@wordfile).split(/\n+/)
+	def load_words(wordfiles)
+		@wordfiles=wordfiles
+		@words=[]
+		@wordfiles.each { |wordfile|
+			words=nil
+			begin
+				@log.info "Loading corpus from #{wordfile}"
+				words=File.read(wordfile)
+				words=words.split(/\n+/)
+				@words.concat(words)
+			rescue => e
+				@log.error("Failed to read #{wordfile}")
+			end
+		}
 		@nwords=@words.length
 	rescue => e
-		puts "Failed to load #{@wordfile}"
+		puts "Failed to load #{@wordfiles.inspect}"
 		raise e
 	end
 
