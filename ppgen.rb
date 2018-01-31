@@ -25,6 +25,7 @@ $opts = {
 	:seed => nil,
 	:random_case => 0,
 	:special_char => 0,
+	:numbers => 0,
 	:pp_hint => []
 }
 
@@ -49,7 +50,7 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 		$opts[:pp_hint]=pp_hint
 	}
 
-	opts.on('-R', '--random-case PERCENT', Integer, "") { |random_case|
+	opts.on('-C', '--random-case PERCENT', Integer, "") { |random_case|
 		raise "Enter percentage as positive integer between 0 and 100" if random_case < 0 || random_case > 100
 		$opts[:random_case] = random_case
 	}
@@ -57,6 +58,11 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 	opts.on('-S', '--special-char PERCENT', Integer, "") { |special_char|
 		raise "Enter percentage as positive integer between 0 and 100" if special_char < 0 || special_char > 100
 		$opts[:special_char] = special_char
+	}
+
+	opts.on('-N', '--numbers PERCENT', Integer, "") { |numbers|
+		raise "Enter percentage as positive integer between 0 and 100" if numbers < 0 || numbers > 100
+		$opts[:numbers] = numbers
 	}
 }
 

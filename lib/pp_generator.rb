@@ -3,9 +3,10 @@
 #
 
 class Pp_generator
-	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase, :random_case
+	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase, :random_case, :special_char, :numbers
 
 	SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
+	NUMBERS=%w/0 1 2 3 4 5 6 7 8 9/
 
 	DEF_OPTS={
 		:pp_length=>4,
@@ -13,7 +14,8 @@ class Pp_generator
 		:seed=>nil,
 		:pp_hint => [],
 		:random_case => 0,
-		:special_char => 0
+		:special_char => 0,
+		:numbers => 0
 	}
 
 	def initialize(wordfile, opts=DEF_OPTS)
@@ -28,6 +30,7 @@ class Pp_generator
 		@max_word_length = opts[:max_word_length]||DEF_OPTS[:max_word_length]
 		@random_case = opts[:random_case]||DEF_OPTS[:random_case]
 		@special_char = opts[:special_char]||DEF_OPTS[:special_char]
+		@numbers = opts[:numbers]||DEF_OPTS[:numbers]
 	end
 
 	def load_words(wordfile)
@@ -45,27 +48,39 @@ class Pp_generator
 		@seed=@r.seed
 	end
 
+	def len_percent(pplen, pc)
+		return 0 if pc == 0
+		(pplen.to_f*pc/100).ceil
+	end
+
+	def array_rand(array)
+		array[Random.rand(array.length)]
+	end
+
 	def massage_passphrase(pp)
 		pplen = pp.length
-		return nil if @random_case == 0 && @special_char == 0
+		return nil if @random_case == 0 && @special_char == 0 && @numbers == 0
 		mp = String.new(pp)
-		if @random_case > 0
-			# percentage of pass phrase to flip case
-			nchars = (pplen.to_f*@random_case/100).ceil
-			nchars.times {
-				# take random index from the string
-				idx = Random.rand(pplen)
-				mp[idx]=mp[idx].swapcase
-			}
-		end
-		if @special_char > 0
-			nchars = (pplen.to_f*@special_char/100).ceil
-			nchars.times {
-				# take random index from the string
-				idx = Random.rand(pplen)
-				mp[idx]=SPECIAL_CHARS[Random.rand(SPECIAL_CHARS.length)]
-			}
-		end
+
+		# percentage of pass phrase to flip case
+		len_percent(pplen, @random_case).times {
+			# take random index from the string
+			idx = Random.rand(pplen)
+			mp[idx]=mp[idx].swapcase
+			@log.debug "rc idx=#{idx}"
+		}
+
+		len_percent(pplen, @special_char).times {
+			# take random index from the string
+			idx = Random.rand(pplen)
+			mp[idx]=array_rand(SPECIAL_CHARS) # SPECIAL_CHARS[Random.rand(SPECIAL_CHARS.length)]
+		}
+
+		len_percent(pplen, @numbers).times {
+			# take random index from the string
+			idx = Random.rand(pplen)
+			mp[idx]=array_rand(NUMBERS) # NUMBERS[Random.rand(NUMBERS.length)]
+		}
 		mp
 	end
 
