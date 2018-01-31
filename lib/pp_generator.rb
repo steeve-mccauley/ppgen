@@ -3,13 +3,17 @@
 #
 
 class Pp_generator
-	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase
+	attr_reader :wordfile, :seed, :log, :pp_hint, :pass_phrase, :random_case
+
+	SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
 
 	DEF_OPTS={
 		:pp_length=>4,
 		:max_word_length=>6,
 		:seed=>nil,
-		:pp_hint => []
+		:pp_hint => [],
+		:random_case => 0,
+		:special_char => 0
 	}
 
 	def initialize(wordfile, opts=DEF_OPTS)
@@ -22,6 +26,8 @@ class Pp_generator
 		@pp_hint = opts[:pp_hint]|| DEF_OPTS[:pp_hint]
 		raise "Too many hints for given passphrase length" if @pp_length <= @pp_hint.length
 		@max_word_length = opts[:max_word_length]||DEF_OPTS[:max_word_length]
+		@random_case = opts[:random_case]||DEF_OPTS[:random_case]
+		@special_char = opts[:special_char]||DEF_OPTS[:special_char]
 	end
 
 	def load_words(wordfile)
@@ -39,6 +45,30 @@ class Pp_generator
 		@seed=@r.seed
 	end
 
+	def massage_passphrase(pp)
+		pplen = pp.length
+		return nil if @random_case == 0 && @special_char == 0
+		mp = String.new(pp)
+		if @random_case > 0
+			# percentage of pass phrase to flip case
+			nchars = (pplen.to_f*@random_case/100).ceil
+			nchars.times {
+				# take random index from the string
+				idx = Random.rand(pplen)
+				mp[idx]=mp[idx].swapcase
+			}
+		end
+		if @special_char > 0
+			nchars = (pplen.to_f*@special_char/100).ceil
+			nchars.times {
+				# take random index from the string
+				idx = Random.rand(pplen)
+				mp[idx]=SPECIAL_CHARS[Random.rand(SPECIAL_CHARS.length)]
+			}
+		end
+		mp
+	end
+
 	def gen_passphrase
 		@pass_phrase=Array.new(@pp_hint)
 		while true do
@@ -54,7 +84,13 @@ class Pp_generator
 	def loop_ppgen(num)
 		puts "seed="+@seed.to_s
 		num.times { |n|
-			puts gen_passphrase
+			pp = gen_passphrase
+			mp = massage_passphrase(pp)
+			if mp.nil?
+				puts pp
+			else
+				puts "#{pp} [#{mp}]"
+			end
 		}
 	end
 end
