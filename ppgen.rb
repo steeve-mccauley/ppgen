@@ -16,6 +16,10 @@ CFG=File.join(MD, ME+".json")
 
 $log=Logger.set_logger(STDERR, Logger::INFO)
 
+PPGEN_CASE=(ENV['PPGEN_CASE']||0).to_i
+PPGEN_NUMBERS=(ENV['PPGEN_NUMBERS']||0).to_i
+PPGEN_SPECIAL=(ENV['PPGEN_SPECIAL']||0).to_i
+
 $opts = {
 	:word_files =>["#{MD}/data/words.txt"],
 	:logger=> $log,
@@ -23,9 +27,11 @@ $opts = {
 	:max_word_length => 6,
 	:num => 20,
 	:seed => nil,
-	:random_case => 0,
-	:special_char => 0,
-	:numbers => 0,
+	:random_case => PPGEN_CASE,
+	:special_char => PPGEN_SPECIAL,
+	:numbers => PPGEN_NUMBERS,
+	:space_special => 0,
+	:space_numbers => 0,
 	:pp_hint => []
 }
 
@@ -50,19 +56,27 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 		$opts[:pp_hint]=pp_hint
 	}
 
-	opts.on('-C', '--random-case PERCENT', Integer, "Percentage of case switches to include in passphrase") { |random_case|
+	opts.on('-C', '--random-case PERCENT', Integer, "Percentage of case switches to include in passphrase, def=#{$opts[:random_case]}%") { |random_case|
 		raise "Enter percentage as positive integer between 0 and 100" if random_case < 0 || random_case > 100
 		$opts[:random_case] = random_case
 	}
 
-	opts.on('-S', '--special-char PERCENT', Integer, "Percentage of special characters to include in passphrase") { |special_char|
+	opts.on('-S', '--special-char PERCENT', Integer, "Percentage of special characters to include in passphrase, def=#{$opts[:special_char]}%") { |special_char|
 		raise "Enter percentage as positive integer between 0 and 100" if special_char < 0 || special_char > 100
 		$opts[:special_char] = special_char
 	}
 
-	opts.on('-N', '--numbers PERCENT', Integer, "Percentage of digits to include in passphrase") { |numbers|
+	opts.on('-T', '--space-special NUM', Integer, "Replace spaces with special characters") { |num|
+		$opts[:space_special]=num
+	}
+
+	opts.on('-N', '--numbers PERCENT', Integer, "Percentage of digits to include in passphrase, def=#{$opts[:numbers]}%") { |numbers|
 		raise "Enter percentage as positive integer between 0 and 100" if numbers < 0 || numbers > 100
 		$opts[:numbers] = numbers
+	}
+
+	opts.on('-O', '--space-numbers NUM', Integer, "Replace up to num spaces with numbers") { |num|
+		$opts[:space_numbers]=num
 	}
 
 	opts.on('-f', '--data FILES', Array, "Array of extra word files in addition to #{$opts[:word_files]}") { |word_files|
