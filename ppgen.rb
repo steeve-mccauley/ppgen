@@ -70,6 +70,10 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 		$opts[:space_special]=num
 	}
 
+	opts.on('-U', '--specials STRING', String, "List of special characters, def [#{Pp_generator.get_specials}]") { |specials|
+		Pp_generator.set_specials(specials)
+	}
+
 	opts.on('-N', '--numbers PERCENT', Integer, "Percentage of digits to include in passphrase, def=#{$opts[:numbers]}%") { |numbers|
 		raise "Enter percentage as positive integer between 0 and 100" if numbers < 0 || numbers > 100
 		$opts[:numbers] = numbers

@@ -5,8 +5,8 @@
 class Pp_generator
 	attr_reader :wordfiles, :seed, :log, :pp_hint, :pass_phrase, :random_case, :special_char, :numbers, :space_special, :space_numbers
 
-	SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
-	NUMBERS=%w/0 1 2 3 4 5 6 7 8 9/
+	@@SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
+	@@NUMBERS=%w/0 1 2 3 4 5 6 7 8 9/
 
 	DEF_OPTS={
 		:pp_length=>4,
@@ -19,6 +19,14 @@ class Pp_generator
 		:space_special => 0,
 		:space_numbers => 0
 	}
+
+	def self.get_specials
+		@@SPECIAL_CHARS.join
+	end
+
+	def self.set_specials(specials)
+		@@SPECIAL_CHARS=specials.split(//)
+	end
 
 	def get_def(opts, key)
 		return opts[key] if opts.key?(key)
@@ -57,6 +65,7 @@ class Pp_generator
 				words.uniq!
 				words.delete("")
 				@words.concat(words)
+				@log.info "Loaded #{words.length} unique words"
 			rescue => e
 				@log.error("Failed to read #{wordfile}")
 			end
@@ -82,6 +91,19 @@ class Pp_generator
 		array[Random.rand(array.length)]
 	end
 
+	##
+	# find_spaces find indeces of spaces in string mp, return random array of indeces
+	#
+	def find_spaces(mp, limit)
+		spaces = []
+		return spaces if limit <= 0
+		pos = -1
+		while (pos = mp.index(/\s/, pos+1))
+			spaces << pos
+		end
+		spaces.shuffle.slice(0, limit)
+	end
+
 	def massage_passphrase(pp)
 		pplen = pp.length
 		return nil if @random_case == 0 && @special_char == 0 && @numbers == 0 && @space_numbers == 0 && @space_special == 0
@@ -96,28 +118,28 @@ class Pp_generator
 		}
 
 		if @space_special > 0
-			@space_special.times {
-				rc=array_rand(SPECIAL_CHARS)
-				mp.sub!(/\s/, rc)
+			find_spaces(mp, @space_special).each { |idx|
+				rc=array_rand(@@SPECIAL_CHARS)
+				mp[idx] = rc
 			}
 		else
 			len_percent(pplen, @special_char).times {
 				# take random index from the string
 				idx = Random.rand(pplen)
-				mp[idx]=array_rand(SPECIAL_CHARS) # SPECIAL_CHARS[Random.rand(SPECIAL_CHARS.length)]
+				mp[idx]=array_rand(@@SPECIAL_CHARS) # @@SPECIAL_CHARS[Random.rand(@@SPECIAL_CHARS.length)]
 			}
 		end
 
 		if @space_numbers > 0
-			@space_numbers.times {
-				rc=array_rand(NUMBERS)
-				mp.sub!(/\s/, rc)
+			find_spaces(mp, @space_numbers).each { |idx|
+				rc=array_rand(@@NUMBERS)
+				mp[idx] = rc
 			}
 		else
 			len_percent(pplen, @numbers).times {
 				# take random index from the string
 				idx = Random.rand(pplen)
-				mp[idx]=array_rand(NUMBERS) # NUMBERS[Random.rand(NUMBERS.length)]
+				mp[idx]=array_rand(@@NUMBERS) # @@NUMBERS[Random.rand(@@NUMBERS.length)]
 			}
 		end
 		mp
@@ -143,7 +165,7 @@ class Pp_generator
 			if mp.nil?
 				puts pp
 			else
-				puts "#{pp} [#{mp}]"
+				puts "#{mp}\n\t[#{pp}]"
 			end
 		}
 	end
