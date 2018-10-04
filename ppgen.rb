@@ -2,12 +2,14 @@
 #
 #
 
-require './lib/logger'
-require './lib/pp_generator'
-require './lib/o_parser'
-
 ME=File.basename($0, ".rb")
 MD=File.dirname(File.expand_path($0))
+RP=File.realpath($0)
+LD=File.dirname(RP)
+
+require "#{LD}/lib/logger"
+require "#{LD}/lib/pp_generator"
+require "#{LD}/lib/o_parser"
 
 TMP="/var/tmp/#{ME}/#{ENV['USER']}"
 DST="#{TMP}/backup"
