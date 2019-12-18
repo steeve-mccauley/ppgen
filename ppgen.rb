@@ -29,6 +29,7 @@ $opts = {
 	:max_word_length => 6,
 	:num => 20,
 	:seed => nil,
+    :random_caps => false,
 	:random_case => PPGEN_CASE,
 	:special_char => PPGEN_SPECIAL,
 	:numbers => PPGEN_NUMBERS,
@@ -57,6 +58,10 @@ $opts = OParser.parse($opts, "#{MD}/data/help.txt") { |opts|
 	opts.on('-w', '--words WORDS', Array, "List of word(s) to include in passphrase") { |pp_hint|
 		$opts[:pp_hint]=pp_hint
 	}
+
+    opts.on('-c', '--random-caps', "") {
+      $opts[:random_caps]=true
+    }
 
 	opts.on('-C', '--random-case PERCENT', Integer, "Percentage of case switches to include in passphrase, def=#{$opts[:random_case]}%") { |random_case|
 		raise "Enter percentage as positive integer between 0 and 100" if random_case < 0 || random_case > 100

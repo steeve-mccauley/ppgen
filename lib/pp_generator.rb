@@ -3,7 +3,7 @@
 #
 
 class Pp_generator
-	attr_reader :wordfiles, :seed, :log, :pp_hint, :pass_phrase, :random_case, :special_char, :numbers, :space_special, :space_numbers
+	attr_reader :wordfiles, :seed, :log, :pp_hint, :pass_phrase, :random_caps, :random_case, :special_char, :numbers, :space_special, :space_numbers
 
 	@@SPECIAL_CHARS = %q{!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~}.split(//)
 	@@NUMBERS=%w/0 1 2 3 4 5 6 7 8 9/
@@ -13,6 +13,7 @@ class Pp_generator
 		:max_word_length=>6,
 		:seed=>nil,
 		:pp_hint => [],
+        :random_caps => false,
 		:random_case => 0,
 		:special_char => 0,
 		:numbers => 0,
@@ -45,6 +46,7 @@ class Pp_generator
 		@pp_hint = get_def(opts, :pp_hint) #opts[:pp_hint]|| DEF_OPTS[:pp_hint]
 		raise "Too many hints for given passphrase length" if @pp_length <= @pp_hint.length
 		@max_word_length = get_def(opts, :max_word_length) #opts[:max_word_length]||DEF_OPTS[:max_word_length]
+        @random_caps = get_def(opts, :random_caps)
 		@random_case = get_def(opts, :random_case) #opts[:random_case]||DEF_OPTS[:random_case]
 		@special_char = get_def(opts, :special_char) #opts[:special_char]||DEF_OPTS[:special_char]
 		@numbers = get_def(opts, :numbers) #opts[:numbers]||DEF_OPTS[:numbers]
@@ -146,6 +148,7 @@ class Pp_generator
 	end
 
 	def gen_passphrase
+        srand
 		@pass_phrase=Array.new(@pp_hint)
 		while true do
 			idx=@r.rand(@nwords)
@@ -154,6 +157,15 @@ class Pp_generator
 			@pass_phrase << word
 			break if @pass_phrase.length == @pp_length
 		end
+        if @random_caps
+          @pass_phrase.each_index { |i|
+            ppi = @pass_phrase[i]
+            if rand(0..1) == 1
+              ppi.upcase!
+              @pass_phrase[i]=ppi
+            end
+          }
+        end
 		@pass_phrase.join(" ")
 	end
 
