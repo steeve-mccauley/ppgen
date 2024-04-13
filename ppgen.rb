@@ -1,6 +1,26 @@
 #!/usr/bin/env ruby
 #
-#
+# $ ./ppgen.rb -h
+# 
+# ppgen.rb [options]
+#     -p, --pplen WORDS                Number of words in passphrase, def=4
+#     -l, --wordlen CHARS              Maximum length of words for passphrase, def=6
+#     -n, --num NUM                    Number of passphrases to generate, def=20
+#     -s, --seed SEED                  Random number generator seed
+#     -w, --words WORDS                List of word(s) to include in passphrase
+#     -c, --random-caps
+#     -C, --random-case PERCENT        Percentage of case switches to include in passphrase, def=0%
+#     -S, --special-char PERCENT       Percentage of special characters to include in passphrase, def=0%
+#     -T, --space-special NUM          Replace spaces with special characters
+#     -U, --specials STRING            List of special characters, def [!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]
+#     -N, --numbers PERCENT            Percentage of digits to include in passphrase, def=0%
+#     -O, --space-numbers NUM          Replace up to num spaces with numbers
+#     -f, --data FILES                 Array of extra word files in addition to ["ppgen-master/data/words.txt"]
+#     -v, --verbose                    Verbose output
+#     -D, --debug                      Turn on debugging output
+#     -h, --help                       Help
+# This is help text
+# 
 
 ME=File.basename($0, ".rb")
 MD=File.dirname(File.expand_path($0))
