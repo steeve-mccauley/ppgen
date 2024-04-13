@@ -1,6 +1,8 @@
 # ppgen
 Passphrase generator using text word file database
 
+Sample words.txt taken from https://github.com/dwyl/english-words.git
+
 ```
 $ ./ppgen.rb -h
 
@@ -22,8 +24,6 @@ ppgen.rb [options]
     -D, --debug                      Turn on debugging output
     -h, --help                       Help
 This is help text
-
-Sample words.txt taken from https://github.com/dwyl/english-words.git
 
 $ ./ppgen.rb --pplen 4 --wordlen 6 --num 25 --debug
 INFO 2024-04-13 11:24:43 -0400: Loading corpus from /home/mccauley/steeve/steeve/ppgen-master/data/words.txt
