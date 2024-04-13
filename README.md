@@ -25,33 +25,35 @@ ppgen.rb [options]
     -h, --help                       Help
 This is help text
 
-$ ./ppgen.rb --pplen 4 --wordlen 6 --num 25 --debug
-INFO 2024-04-13 11:24:43 -0400: Loading corpus from ppgen-master/data/words.txt
-INFO 2024-04-13 11:24:43 -0400: Loaded 354983 unique words
-seed=79171473528676992265993447293981554969
-pepsi kerns seimas rayed
-fremt worts fugio jger
-camper fiddle bornan tarots
-augury babel palate gowan
-jiffs gutti poles sarpo
-uhuru imbues kimbo lehay
-wrive rotch malars righty
-capite paua ataunt dbrn
-lipped readd ohv none
-dat soke tweeds mishap
-kat warded roused funori
-finity randie tacso rough
-wjc gentry unseen seqrch
-appast dromon pursy grush
-forked lye donkey awedly
-gozell scivvy tabet kalpas
-atli guiac dioxid shelly
-netman yirred dougl renish
-thing sixes no night
-alchem regrip tuba pulka
-octine soss dynast crops
-finary balian cotter koi
-vulgus serum achree suety
-bimong shap nigre ghast
-ons calvin felons cark
+$ ./ppgen.rb --pplen 4 --wordlen 8 --num 25 --debug --random-caps
+INFO 2024-04-13 13:15:23 -0400: Loading corpus from ppgen-master/data/words.txt
+INFO 2024-04-13 13:15:23 -0400: Loaded 354983 unique words
+seed=133177273618255052214803008488114992619
+SPHENE sithens ACHKAN ELOINE
+newfish padella fundi UNHOODED
+UPBRIM apoplexy REVENGE BURIAN
+BOODLERS biffed binh ARRAYER
+SULLIAGE ZOOGLEA AMEBEAN SUBWAY'S
+bandura KYMOGRAM LETE RAMMED
+oologist lactase nacre AGATE
+EPHOI diobolon PANOCHAS BALKIER
+DIABASE elaenia BLAZONER inset
+WOODHUNG upfurl mouzah outbrags
+arsenism subindex parrots FRIZED
+FUNNING WAXIEST IDIC eelier
+ZYDECO GAUZILY guinde TAPIST
+joey burelly floormen SLEEKEST
+foredone igdrasil INDRENCH tlo
+advising ENVIER obtusion STEERMAN
+kivas limpet WAXWINGS freshman
+AFFLATE MALACTIC gasteria IODATES
+HAREMLIK BAREHEAD hemera RHIZOGEN
+blear BURFISH TILLAGE MUFFIN'S
+motivic PILAUS dragoon DISCED
+ondy ABROACH view ballote
+BOSHES ISLANDRY splet menarche
+METWAND MODENA vitiates ESPIGLE
+LOOKOUTS NONAGON BERRIER STADIUM
+
+
 ```
