@@ -19,14 +19,14 @@ ppgen.rb [options]
     -U, --specials STRING            List of special characters, def [!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]
     -N, --numbers PERCENT            Percentage of digits to include in passphrase, def=0%
     -O, --space-numbers NUM          Replace up to num spaces with numbers
-    -f, --data FILES                 Array of extra word files in addition to ["/home/mccauley/steeve/steeve/ppgen-master/data/words.txt"]
+    -f, --data FILES                 Array of extra word files in addition to ["ppgen-master/data/words.txt"]
     -v, --verbose                    Verbose output
     -D, --debug                      Turn on debugging output
     -h, --help                       Help
 This is help text
 
 $ ./ppgen.rb --pplen 4 --wordlen 6 --num 25 --debug
-INFO 2024-04-13 11:24:43 -0400: Loading corpus from /home/mccauley/steeve/steeve/ppgen-master/data/words.txt
+INFO 2024-04-13 11:24:43 -0400: Loading corpus from ppgen-master/data/words.txt
 INFO 2024-04-13 11:24:43 -0400: Loaded 354983 unique words
 seed=79171473528676992265993447293981554969
 pepsi kerns seimas rayed
