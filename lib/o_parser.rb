@@ -30,7 +30,7 @@ class OParser
 		raise "Logger not set in OParser" if @@log.nil?
 		if help_text.nil?
 			help_text = ""
-		elsif File.exists?(help_text)
+		elsif File.exist?(help_text)
 			help_text=File.read(help_text)
 		end
 		optparser = OptionParser.new { |opts|
