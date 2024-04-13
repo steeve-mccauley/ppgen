@@ -1,6 +1,7 @@
 # ppgen
 Passphrase generator using text word file database
 
+```
 $ ./ppgen.rb -h
 
 ppgen.rb [options]
@@ -53,4 +54,4 @@ finary balian cotter koi
 vulgus serum achree suety
 bimong shap nigre ghast
 ons calvin felons cark
-
+```
